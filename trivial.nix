@@ -56,25 +56,6 @@
         '';
       };
 
-      # Setup scripts
-      jobs.init_mediawiki_db = {
-        task = true;
-        startOn = "started postgresql";
-        script = ''
-          mkdir -p /var/lib/psql-schemas
-          if ! [ -e /var/lib/psql-schemas/mediawiki-created ]; then
-            ${pkgs.postgresql}/bin/createuser --no-superuser --no-createdb --no-createrole mediawiki
-            ${pkgs.postgresql}/bin/createdb mediawiki -O mediawiki
-            ( echo 'CREATE LANGUAGE plpgsql;'
-              cat ${mediawikiRoot}/maintenance/postgres/tables.sql
-              echo 'CREATE TEXT SEARCH CONFIGURATION public.default ( COPY = pg_catalog.english );'
-              echo COMMIT
-            ) | ${pkgs.postgresql}/bin/psql -U mediawiki mediawiki
-            touch /var/lib/psql-schemas/mediawiki-created
-          fi
-        '';
-      };
-
       # Firewall
       networking.firewall.allowedTCPPorts = [ 80 ];
     };
