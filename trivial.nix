@@ -7,9 +7,6 @@
     with pkgs.lib;
 
     {
-      # Packages
-      environment.systemPackages = [ pkgs.postgresql ];
-
       # Webserver
       services.httpd = {
         enable = true;
